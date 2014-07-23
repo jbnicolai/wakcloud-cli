@@ -1,11 +1,12 @@
 var actions = require('./actions');
 var storage = require('node-persist');
+var chalk = require("chalk");
 
 storage.initSync();
-console.log(require('fs').readFileSync('./files/intro') + "");
+console.log(chalk.cyan(require('fs').readFileSync('./files/intro') + ""));
 
 if(storage.getItem('cookies')){
-	actions.run();
+        actions.run();
 }else{
-	actions.login();
+        actions.login();
 }
