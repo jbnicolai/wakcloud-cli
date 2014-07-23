@@ -1,0 +1,15 @@
+Commands list:
+
+	list		: List all applications (Alias: ll)
+	help		: Display this menu (Alias: ?)
+	exit		: Exit the prompt
+	unselect	: Unselect the current application
+
+	start 	[id]	: Start application
+	stop 	[id]	: Stop application
+	info 	[id]	: Get application's details
+	logs 	[id]	: Display application's logs
+	status 	[id]	: Display application's status
+	reload 	[id]	: Reload application
+	select 	[id]	: Select application
+	delete 	[id]	: Remove application (Alias: remove)

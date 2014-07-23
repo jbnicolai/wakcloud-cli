@@ -1,0 +1,10 @@
+{
+	"offers": [{
+		"name": "Free",
+		"value": "free-limited"
+	}],
+	"regions": [{
+		"name": "US",
+		"value": "US"
+	}]
+}
