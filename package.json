@@ -1,6 +1,9 @@
 {
   "name": "wakcloud-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
+  "bin": {
+    "wakcloud": "./bin/wakcloud-cli.js"
+  },
   "description": "A cli too for wakcloud",
   "license": "MIT",
   "keywords": [

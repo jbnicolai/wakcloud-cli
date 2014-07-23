@@ -301,7 +301,7 @@ exports.run = function() {
 					break;
 				case cmd === 'help':
 				case cmd === '?':
-					console.log(require('fs').readFileSync('./files/help') + "");
+					console.log(require('fs').readFileSync(__dirname + '/files/help') + "");
 					exports.run();
 					break;
 				case cmd === '':

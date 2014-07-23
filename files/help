@@ -3,6 +3,7 @@ Commands list:
 	list		: List all applications (Alias: ll)
 	help		: Display this menu (Alias: ?)
 	exit		: Exit the prompt
+	logout		: Logout and exit the prompt
 	unselect	: Unselect the current application
 
 	start 	[id]	: Start application
