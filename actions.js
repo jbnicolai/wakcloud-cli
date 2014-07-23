@@ -32,7 +32,7 @@ function execAction(id, ac) {
 						color = color.red;
 						break
 					default:
-						color = color.orange;
+						color = color.yellow;
 						break
 				}
 
