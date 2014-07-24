@@ -6,7 +6,9 @@ var console_url = "http://console.wakcloud.com/";
 
 exports.cookies = storage.getItem('cookies');
 exports.current = null;
-storage.initSync();
+storage.initSync({
+	dir: __dirname + '/persist'
+});
 
 exports.login = function(credentials, callback) {
 	credentials = credentials || {
