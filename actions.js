@@ -15,6 +15,12 @@ function login() {
 }
 
 function execAction(id, ac) {
+	var func = wakcloud[ac];
+
+	if(typeof func !== 'function'){
+		func = wakcloud[pubCmds[ac].action];
+	}
+
 	wakcloud[ac].apply(wakcloud[ac], [id]).then(function(response) {
 		switch (ac) {
 			case 'logs':
@@ -253,7 +259,7 @@ commands.create = function(){
 };
 
 (function() {
-	var actions = ['start', 'stop', 'reload', 'delete', 'logs', 'permissions', 'status', 'info'];
+	var actions = ['start', 'stop', 'reload', 'remove', 'logs', 'permissions', 'status', 'info'];
 	var that = exports;
 
 	actions.forEach(function(ac) {
@@ -265,7 +271,7 @@ commands.create = function(){
 					commands[ac](appID);
 				});
 			} else {
-				var confirm = ['delete', 'stop', 'remove'].indexOf(ac) >= 0;
+				var confirm = ['stop', 'remove'].indexOf(ac) >= 0;
 
 				if (confirm) {
 					inquirer.prompt([{

@@ -96,9 +96,9 @@
 				}],
 				"description": "Reload application"
 			},
-			"delete": {
-				"alias": ["rm", "remove", "destroy"],
-				"action": "delete",
+			"remove": {
+				"alias": ["rm", "delete", "destroy", "del"],
+				"action": "remove",
 				"params": [{
 					"name": "id",
 					"required": false,
