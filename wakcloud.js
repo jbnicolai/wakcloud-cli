@@ -122,7 +122,7 @@ exports.reload = function(id) {
 	});
 };
 
-exports.delete = exports.remove = function(id) {
+exports.remove = function(id) {
 	id = id || exports.current;
 
 	return execute.call(this, function() {

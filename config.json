@@ -1,10 +1,141 @@
 {
-	"offers": [{
-		"name": "Free",
-		"value": "free-limited"
-	}],
-	"regions": [{
-		"name": "US",
-		"value": "US"
-	}]
+	"service": {
+		"offers": [{
+			"name": "Free",
+			"value": "free-limited"
+		}],
+		"regions": [{
+			"name": "US",
+			"value": "US"
+		}]
+	},
+	"prompt": {
+		"commands": {
+			"list": {
+				"alias": ["ll", "ls"],
+				"action": "list",
+				"description": "List all applications"
+			},
+			"stop": {
+				"alias": [],
+				"action": "stop",
+				"params": [{
+					"name": "id",
+					"required": false,
+					"description": "If specified, the application with the given %id% will be stopped"
+				}],
+				"description": "Stop application"
+			},
+			"logs": {
+				"alias": [],
+				"action": "logs",
+				"params": [{
+					"name": "id",
+					"required": false,
+					"description": "If specified, the logs of the application with the given %id% will be displayed"
+				}],
+				"description": "Display application's logs"
+			},
+			"info": {
+				"alias": [],
+				"action": "info",
+				"params": [{
+					"name": "id",
+					"required": false,
+					"description": "If specified, the information of the application with the given %id% will be displayed"
+				}],
+				"description": "Get application's details"
+			},
+			"help": {
+				"alias": ["man", "?", "test"],
+				"action": "help",
+				"params": [{
+					"name": "cmd",
+					"required": false,
+					"description": "If specified, only the manual of the command %cmd% will be displayed"
+				}],
+				"description": "Display this manual"
+			},
+			"exit": {
+				"alias": [],
+				"action": "exit",
+				"description": "Exit the prompt"
+			},
+			"start": {
+				"alias": [],
+				"params": [{
+					"name": "id",
+					"required": false,
+					"description": "If specified, the application with the given %id% will be started"
+				}],
+				"action": "start",
+				"description": "Start application"
+			},
+			"select": {
+				"alias": ["sel"],
+				"action": "select",
+				"params": [{
+					"name": "id",
+					"required": false,
+					"description": "If specified, the application with the given %id% will be selected"
+				}],
+				"description": "Select application"
+			},
+			"create": {
+				"alias": ["new"],
+				"action": "create",
+				"description": "Create new application"
+			},
+			"reload": {
+				"alias": [],
+				"action": "reload",
+				"params": [{
+					"name": "id",
+					"required": false,
+					"description": "If specified, the application with the given %id% will be reloaded"
+				}],
+				"description": "Reload application"
+			},
+			"delete": {
+				"alias": ["rm"],
+				"action": "delete",
+				"params": [{
+					"name": "id",
+					"required": false,
+					"description": "If specified, the application with the given %id% will be removed"
+				}],
+				"description": "Remove application"
+			},
+			"status": {
+				"alias": [],
+				"action": "status",
+				"params": [{
+					"name": "id",
+					"required": false,
+					"description": "If specified, the status of the application with the given %id% will be selected"
+				}],
+				"description": "Display application's status"
+			},
+			"logout": {
+				"alias": [],
+				"action": "logout",
+				"description": "Logout and exit the prompt"
+			},
+			"unselect": {
+				"alias": [],
+				"action": "unselect",
+				"description": "Unselect the current application"
+			},
+			"permissions": {
+				"alias": [],
+				"action": "permissions",
+				"params": [{
+					"name": "id",
+					"required": false,
+					"description": "If specified, the permissions of the application with the given %id% will be displayed"
+				}],
+				"description": "Display the permissions of the selected application"
+			}
+		}
+	}
 }

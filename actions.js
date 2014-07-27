@@ -1,10 +1,13 @@
-var wakcloud = require('./wakcloud');
-var helpers = require('./helpers');
-var inquirer = require("inquirer");
-var chalk = require('chalk');
-var config = require('./config');
-var error = chalk.bold.red;
-var apps = null;
+var wakcloud 	= require('./wakcloud');
+var helpers 	= require('./helpers');
+var inquirer 	= require("inquirer");
+var chalk 		= require('chalk');
+var config 		= require('./config');
+var serviceConf = config.service;
+var pubCmds 	= config.prompt.commands;
+var commands	= {};
+var error 		= chalk.bold.red;
+var apps 		= null;
 
 function login() {
 	console.log(error('Your session has expired, please login again'));
@@ -143,7 +146,7 @@ exports.login = function() {
 	ask();
 };
 
-exports.ll = exports.list = function(fn) {
+commands.list = function(fn) {
 	var l = wakcloud.list();
 
 	if (typeof l == 'number') {
@@ -163,7 +166,7 @@ exports.ll = exports.list = function(fn) {
 	}).fail(fail);
 };
 
-exports.select = function(id, callback) {
+commands.select = function(id, callback) {
 	function chooseApp(applications) {
 		var choices = [];
 		applications.forEach(function(app) {
@@ -192,7 +195,7 @@ exports.select = function(id, callback) {
 		if (apps) {
 			chooseApp(apps);
 		} else {
-			exports.list(chooseApp);
+			commands.list(chooseApp);
 		}
 	} else {
 		wakcloud.current = id;
@@ -200,16 +203,16 @@ exports.select = function(id, callback) {
 	}
 };
 
-exports.create = function(){
+commands.create = function(){
 	inquirer.prompt([{
 		name: 'offer',
 		message: 'Select the offer',
-		choices: config.offers,
+		choices: serviceConf.offers,
 		type: 'list'
 	}, {
 		name: 'region',
 		message: 'Select the region',
-		choices: config.regions,
+		choices: serviceConf.regions,
 		type: 'list'
 	}, {
 		name: 'domain',
@@ -250,16 +253,16 @@ exports.create = function(){
 };
 
 (function() {
-	var actions = ['start', 'stop', 'reload', 'delete', 'remove', 'logs', 'permissions', 'status', 'info'];
+	var actions = ['start', 'stop', 'reload', 'delete', 'logs', 'permissions', 'status', 'info'];
 	var that = exports;
 
 	actions.forEach(function(ac) {
-		exports[ac] = function(id) {
+		commands[ac] = function(id) {
 			id = id || wakcloud.current;
 
 			if (!id) {
-				that.select(id, function(appID){
-					that[ac](appID);
+				commands.select(id, function(appID){
+					commands[ac](appID);
 				});
 			} else {
 				var confirm = ['delete', 'stop', 'remove'].indexOf(ac) >= 0;
@@ -284,6 +287,124 @@ exports.create = function(){
 	});
 })();
 
+commands.help = function(cmd){
+	function pad(str, length){
+		length = isNaN(length)? 15: parseInt(length);
+
+		while(str.length < length){
+			str += ' ';
+		}
+
+		return str;
+	}
+
+	function describe(cmd, meta, isDetails){
+		var alias = meta.alias;
+		var params = meta.params;
+		var description = meta.description;
+		var paramsDesc = '';
+
+		result = isDetails? chalk.green.bold(cmd):chalk.cyan(cmd);
+
+		if(alias && Array.isArray(alias)){
+			if(cmd != meta.main_cmd && alias.indexOf(meta.main_cmd)){
+				alias.unshift(meta.main_cmd);
+			}
+
+			if(alias.indexOf(cmd) >= 0){
+				alias.splice(alias.indexOf(cmd), 1);
+			}
+		}
+
+		if(params && Array.isArray(params) && params.length){
+			result = pad(result,22);
+			params.forEach(function(param){
+				if(param.required){
+					paramsDesc += ' <' + param.name + '>';
+				}else{
+					paramsDesc += ' [' + param.name + ']';
+				}
+			});
+			result += paramsDesc;
+		}
+
+		result = pad(result,40);
+		
+		if(description){
+			result += (isDetails? '\n':': ') + description;
+		}else{
+			result += (isDetails? '\n':':');
+		}
+
+		if(alias && Array.isArray(alias) && alias.length){
+			result += ' [alias: ' + chalk.gray(alias.join(', ')) + ']';
+		}
+
+		result += (isDetails? '\n':'');
+
+		if(isDetails && params && Array.isArray(params) && params.length){
+			params.forEach(function(param){
+				result += '\n- ' + chalk.cyan(param.name) + ' [' + (param.required? 'required': 'optional') + ']: ' + param.description.replace(/%(((?!%).)*)%/g, '\u001b[43m$1\u001b[49m');
+			});
+		}
+
+		return result;
+	}
+
+	if(cmd){
+		if(exports.commands.hasOwnProperty(cmd) && exports.commands[cmd].__meta__){
+			var meta = exports.commands[cmd].__meta__;
+
+			if(meta){
+				console.log(describe(cmd, meta, true));
+			}
+		} else {
+			console.log(error('Unknown command!'));
+		}
+	}else{
+		for(var attr in pubCmds){
+			var meta = pubCmds[attr];
+
+			console.log(describe(attr, meta, false));
+		}
+	}
+	exports.run();
+};
+
+commands.exit = function(){
+	process.exit();
+};
+
+commands.unselect = function(){
+	if(wakcloud.current){
+		wakcloud.current = null;
+	}else{
+		console.log(error('No selected application.'));
+	}
+
+	exports.run();
+};
+
+commands.logout = function(){
+	wakcloud.logout();
+};
+
+(function(){
+	var cmdsToExport = exports.commands = {};
+
+	for(var attr in pubCmds){
+		if(pubCmds.hasOwnProperty(attr) && commands.hasOwnProperty(pubCmds[attr].action)){
+			cmdsToExport[attr] = commands[pubCmds[attr].action];
+			cmdsToExport[attr].__meta__ = pubCmds[attr];
+			cmdsToExport[attr].__meta__.main_cmd = attr;
+			
+			pubCmds[attr].alias.forEach(function(cmd){
+				cmdsToExport[cmd] = commands[pubCmds[attr].action];
+			});
+		}
+	}
+})();
+
 exports.run = function() {
 	setTimeout(function() {
 		inquirer.prompt([{
@@ -296,31 +417,11 @@ exports.run = function() {
 			cmd = cmd.trim();
 
 			switch (true) {
-				case cmd === 'exit':
-					process.exit();
-					break;
-				case cmd === 'help':
-				case cmd === '?':
-					console.log(require('fs').readFileSync(__dirname + '/files/help') + "");
-					exports.run();
-					break;
 				case cmd === '':
 					exports.run();
 					break;
-				case cmd === "unselect":
-					if(wakcloud.current){
-						wakcloud.current = null;
-					}else{
-						console.log(error('No selected application.'));
-					}
-
-					exports.run();
-					break;
-				case cmd === "logout":
-					wakcloud.logout();
-					break;
-				case exports.hasOwnProperty(cmd) && ['login', 'run'].indexOf(cmd) < 0:
-					exports[cmd].apply(exports[cmd], command);
+				case exports.commands.hasOwnProperty(cmd):
+					exports.commands[cmd].apply(exports.commands[cmd], command);
 					break;
 				default:
 					console.log(error('Unknown command!'));
