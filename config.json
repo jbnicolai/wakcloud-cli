@@ -37,7 +37,7 @@
 				"description": "Display application's logs"
 			},
 			"info": {
-				"alias": [],
+				"alias": ["inspect"],
 				"action": "info",
 				"params": [{
 					"name": "id",
@@ -47,7 +47,7 @@
 				"description": "Get application's details"
 			},
 			"help": {
-				"alias": ["man", "?", "test"],
+				"alias": ["man", "?"],
 				"action": "help",
 				"params": [{
 					"name": "cmd",
@@ -57,7 +57,7 @@
 				"description": "Display this manual"
 			},
 			"exit": {
-				"alias": [],
+				"alias": ["quit", "q"],
 				"action": "exit",
 				"description": "Exit the prompt"
 			},
@@ -87,7 +87,7 @@
 				"description": "Create new application"
 			},
 			"reload": {
-				"alias": [],
+				"alias": ["rel"],
 				"action": "reload",
 				"params": [{
 					"name": "id",
@@ -97,7 +97,7 @@
 				"description": "Reload application"
 			},
 			"delete": {
-				"alias": ["rm"],
+				"alias": ["rm", "remove", "destroy"],
 				"action": "delete",
 				"params": [{
 					"name": "id",
@@ -122,7 +122,7 @@
 				"description": "Logout and exit the prompt"
 			},
 			"unselect": {
-				"alias": [],
+				"alias": ["unsel"],
 				"action": "unselect",
 				"description": "Unselect the current application"
 			},
